@@ -1,26 +1,20 @@
-# StenoAI reviewer notes
+# abhishekkumar2271998/repo-a-git-check reviewer notes
 
 ## Architecture
-The StenoAI codebase is structured as a hybrid application encompassing an Electron desktop client and a Python backend. The main directories include `app` for the Electron app files and `src` for the Python backend services, along with a root-level CLI script (`simple_recorder.py`) for command-line interactions.
+This repository hosts an application named StenoAI, designed to serve as a private AI stenographer for recording, transcribing, and summarizing confidential meetings on macOS. It is organized into an Electron frontend and a Python backend, where the Electron app located in the `app` directory interfaces with the Python source code in the `src` directory to handle audio input and AI model interactions.
 
 ## Conventions
-- **File Structure**: The project retains a clear separation between the frontend (Electron + React in `app`) and backend (Python in `src`). The Electron app follows standard Electron conventions, with `main.js` for the main process, and additional routes and components in `renderer/src/`.
-- **JavaScript**:
-  - Use semicolons at the end of statements.
-  - Utilize `const` and `let` over `var` (notable in `app/main.js`).
-  - Follow consistent asynchronous handling patterns, leveraging Promises and async/await to avoid callback hell, as seen in functions like `isBackendRecording()` in `main.js`.
-- **Python**:
-  - Follow PEP 8 guidelines, use type hints, and include docstrings (demonstrated in `src/audio_recorder.py`).
-  - Linting is enforced using `ruff`: `ruff check .`.
+- **Python Code Style**: The project adheres to PEP 8 guidelines. Each function and class must include a docstring. Type hints are used where appropriate. Code is expected to be linted using `ruff`.
+- **JavaScript Code Style**: JavaScript files utilize semicolons, and prefer `const` and `let` over `var`. Project-specific patterns should be followed as per existing code in the repository.
+- **Directory Structure**: 
+  - `app/` contains the Electron application components, where `main.js` serves as the entry point.
+  - `src/` comprises the core Python logic, handling audio recording (`audio_recorder.py`), integration with speech processing models (`transcriber.py`, `summarizer.py`), and data models (`models.py`).
+  - The CLI interface is implemented in `simple_recorder.py`, which provides a command-line interface for testing features.
   
-- **React Components**: Use functional components with hooks (e.g., `useEffect`, `useLayoutEffect`), as seen in `App.tsx`. State management seems to be handled with context providers (e.g., `AskBarProvider`).
-
 ## Intentional non-standard choices
-- The `.env` file is used to avoid hardcoded secrets in the source code, a practice not commonly found in many repositories, which may confuse bots expecting configuration to be managed differently (documented in `main.js`).
-- The project distinguishes between development and production paths for assets and binaries, supporting a clean separation for builds versus development (`getBackendPath()` function in `main.js`). 
+- **Dotenv Management**: The loading of environment variables from a local `.env` file within `main.js` allows for the secure handling of sensitive information such as client credentials. This is not standard as most configurations are hard-coded or managed via system configuration.
 
 ## Watch out for
-- **Hard-Coded Dependencies**: Ensure that any required services (like Ollama and ffmpeg) are mentioned in your PRs to avoid installation issues. They must be installed manually as per `CONTRIBUTING.md`.
-- **Versioning**: The team uses manual semantic versioning which can lead to irregularities; reviewers should ensure version changes in `package.json` align with the actual code modifications in PRs.
-- **Test Coverage**: Review for missing tests, especially around critical functionalities like recording or summarizing actions that could lead to substantial user impact.
-- **Handling Environment Variables**: Be cautious with any changes that might affect the loading or usage of environment variables — changes in their handling can introduce unwanted behavior, especially across varied environments (development vs. production).
+- **Environment-Specific Code**: The application is explicitly designed to run on macOS, and compatibility with other platforms is not present. Reviewers should ensure that any changes do not inadvertently introduce cross-platform dependencies.
+- **Version Control Practices**: The repository uses manual semantic versioning, which may lead to inconsistencies if contributors forget to update versions. Reviewers should confirm that version updates are documented properly in PRs.
+- **Error Handling**: Make sure that any changes to the code adhere to the existing error-handling patterns, especially in the backend interactions, which can fail silently without proper logging.
