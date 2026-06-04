@@ -1,20 +1,21 @@
-# abhishekkumar2271998/repo-a-git-check reviewer notes
+# StenoAI reviewer notes
 
 ## Architecture
-This repository hosts an application named StenoAI, designed to serve as a private AI stenographer for recording, transcribing, and summarizing confidential meetings on macOS. It is organized into an Electron frontend and a Python backend, where the Electron app located in the `app` directory interfaces with the Python source code in the `src` directory to handle audio input and AI model interactions.
+StenoAI is a macOS application designed for recording, transcribing, and summarizing meetings using local AI models. The project is structured into an Electron app frontend (located in the `app/` directory) and a Python backend for processing (found in the `src/` directory). The frontend utilizes React and is built with Vite, while the backend handles audio operations and AI model interactions.
 
 ## Conventions
-- **Python Code Style**: The project adheres to PEP 8 guidelines. Each function and class must include a docstring. Type hints are used where appropriate. Code is expected to be linted using `ruff`.
-- **JavaScript Code Style**: JavaScript files utilize semicolons, and prefer `const` and `let` over `var`. Project-specific patterns should be followed as per existing code in the repository.
-- **Directory Structure**: 
-  - `app/` contains the Electron application components, where `main.js` serves as the entry point.
-  - `src/` comprises the core Python logic, handling audio recording (`audio_recorder.py`), integration with speech processing models (`transcriber.py`, `summarizer.py`), and data models (`models.py`).
-  - The CLI interface is implemented in `simple_recorder.py`, which provides a command-line interface for testing features.
-  
+- **Python Code Style**: The project adheres to PEP 8 for styling, utilizes type hints, and requires docstrings for functions and classes, as indicated in `CONTRIBUTING.md`.
+- **JavaScript Code Style**: The JavaScript files follow a set style including mandatory semicolons, usage of `const` and `let` over `var`, and adherence to existing code patterns. For instance, the main application logic in `app/main.js` uses these conventions.
+- **File Structure**: The repo’s file layout is organized into two primary sections: `src/` for backend Python scripts like `audio_recorder.py` and `transcriber.py`, and `app/` for the Electron application which includes main files (`main.js`, `renderer/`) and a structured `package.json` for dependencies.
+- **Testing**: The Electron app includes commands for end-to-end testing (`test:e2e` in `app/package.json`), emphasizing the need for functional testing of the app’s UI interactions.
+- **Environment Variables**: The backend loads environment variables from a `.env` file (not included in the repo) to avoid hardcoding sensitive credentials. This is a critical practice for maintaining security and should be honored in implementations.
+
 ## Intentional non-standard choices
-- **Dotenv Management**: The loading of environment variables from a local `.env` file within `main.js` allows for the secure handling of sensitive information such as client credentials. This is not standard as most configurations are hard-coded or managed via system configuration.
+- The backend includes specific checks for system audio capture capabilities which differ depending on macOS versions. For instance, `isCoreAudioTapSupported()` in `app/main.js` enables functionality only if the operating system is 14.4 or later. This check allows the application to avoid silent recordings on incompatible systems, a deliberate design choice rather than a generic fallback approach.
+- The usage of `@electron/notarize` within the build process signals adherence to macOS security policies, which is non-standard for many projects but shows a clear intention of maintaining application integrity and security compliance.
 
 ## Watch out for
-- **Environment-Specific Code**: The application is explicitly designed to run on macOS, and compatibility with other platforms is not present. Reviewers should ensure that any changes do not inadvertently introduce cross-platform dependencies.
-- **Version Control Practices**: The repository uses manual semantic versioning, which may lead to inconsistencies if contributors forget to update versions. Reviewers should confirm that version updates are documented properly in PRs.
-- **Error Handling**: Make sure that any changes to the code adhere to the existing error-handling patterns, especially in the backend interactions, which can fail silently without proper logging.
+- Ensure environmental dependencies and system configurations are correctly set up per the instructions in `CONTRIBUTING.md`. Missing these steps can lead to runtime failures.
+- Be vigilant about potential missing error handling in IPC communication as seen throughout `app/preload.js` and `app/main.js`, where processes could silently fail without user notification.
+- Inconsistent use of syntax such as ignoring ESLint warnings could lead to harder-to-maintain code, especially evident in places where the linting process isn’t clearly invoked based on the provided scripts.
+- Be cautious of memory management, particularly in the handling of large audio files in the backend. The performance implications haven’t been covered extensively and should be checked during code reviews for optimization opportunities.
