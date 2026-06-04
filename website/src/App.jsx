@@ -5,6 +5,7 @@ import { HowItWorks } from "./sections/HowItWorks";
 import { Features } from "./sections/Features";
 import { Models } from "./sections/Models";
 import { Industries } from "./sections/Industries";
+import { Clients } from "./sections/Clients";
 import { FAQ } from "./sections/FAQ";
 import { CTAFooter } from "./sections/CTAFooter";
 import { Footer } from "./sections/Footer";
@@ -19,6 +20,7 @@ export default function App() {
       <Features />
       <Models />
       <Industries />
+      <Clients />
       <FAQ />
       <CTAFooter />
       <Footer />
