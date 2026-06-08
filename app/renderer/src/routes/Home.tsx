@@ -252,6 +252,10 @@ export function Home({ mode }: HomeProps) {
             )}
           </section>
 
+          {mode === 'home' && <FeatureCarousel />}
+
+          {mode === 'home' && <ContactForm />}
+
           {mode === 'home' && <ProjectInfo />}
 
           {mode === 'home' && <ContactInfo />}
@@ -399,6 +403,205 @@ const CONTACTS: Contact[] = [
     href: 'https://stenoai.app',
   },
 ];
+
+interface Slide {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+}
+
+const CAROUSEL_SLIDES: Slide[] = [
+  {
+    icon: <Mic className="size-[18px]" />,
+    title: 'One-click capture',
+    body: 'Start recording any meeting instantly — or from anywhere with ⌘⇧R. Mic and system audio are captured together.',
+  },
+  {
+    icon: <FileText className="size-[18px]" />,
+    title: 'On-device transcription',
+    body: 'Whisper transcribes your audio locally. Nothing is uploaded — your conversations never leave your Mac.',
+  },
+  {
+    icon: <Sparkles className="size-[18px]" />,
+    title: 'Instant summaries',
+    body: 'A local model turns transcripts into clean notes and answers. Ask questions across every meeting you record.',
+  },
+  {
+    icon: <Search className="size-[18px]" />,
+    title: 'Search everything',
+    body: 'Find any moment across all your notes in seconds with fast, full-text search over your meeting history.',
+  },
+];
+
+// Feature carousel shown on the home view — a horizontally scrollable strip of
+// highlight cards. Uses scroll-snap and dot indicators driven purely by local
+// state, following the paper/ink styling of the page.
+function FeatureCarousel() {
+  const [active, setActive] = React.useState(0);
+  const trackRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollTo = (i: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.children[i] as HTMLElement | undefined;
+    if (card) track.scrollTo({ left: card.offsetLeft, behavior: 'smooth' });
+    setActive(i);
+  };
+
+  const onScroll = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    const i = Math.round(track.scrollLeft / track.clientWidth);
+    setActive(Math.max(0, Math.min(CAROUSEL_SLIDES.length - 1, i)));
+  };
+
+  return (
+    <section className="mt-10">
+      <SectionHead title="Highlights" count={CAROUSEL_SLIDES.length} />
+      <div
+        ref={trackRef}
+        onScroll={onScroll}
+        className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1"
+        style={{ scrollbarWidth: 'none' }}
+      >
+        {CAROUSEL_SLIDES.map((slide) => (
+          <div
+            key={slide.title}
+            className="flex min-w-full shrink-0 snap-start items-start gap-4 rounded-lg p-5"
+            style={{
+              background: 'var(--surface-raised)',
+              border: '1px solid var(--border-subtle)',
+            }}
+          >
+            <div
+              className="flex size-9 shrink-0 items-center justify-center rounded-md"
+              style={{ background: 'var(--surface-hover)', color: 'var(--fg-1)' }}
+            >
+              {slide.icon}
+            </div>
+            <div className="min-w-0">
+              <h3
+                className="text-sm font-medium"
+                style={{ color: 'var(--fg-1)', fontFamily: 'var(--font-sans)' }}
+              >
+                {slide.title}
+              </h3>
+              <p
+                className="mt-1 text-[13px] leading-[1.55]"
+                style={{ color: 'var(--fg-2)' }}
+              >
+                {slide.body}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 flex items-center justify-center gap-1.5">
+        {CAROUSEL_SLIDES.map((slide, i) => (
+          <button
+            key={slide.title}
+            type="button"
+            onClick={() => scrollTo(i)}
+            aria-label={`Go to slide ${i + 1}`}
+            aria-current={i === active}
+            className="size-1.5 rounded-full transition-colors"
+            style={{
+              background: i === active ? 'var(--fg-1)' : 'var(--border-subtle)',
+            }}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Contact-form section shown on the home view — name, email, and message
+// fields wired to local state, following the paper/ink styling of the page.
+function ContactForm() {
+  const [name, setName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [message, setMessage] = React.useState('');
+  const [sent, setSent] = React.useState(false);
+
+  const fieldStyle: React.CSSProperties = {
+    background: 'rgba(27,27,25,0.04)',
+    color: 'var(--fg-1)',
+    fontFamily: 'var(--font-sans)',
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSent(true);
+    setName('');
+    setEmail('');
+    setMessage('');
+  };
+
+  return (
+    <section className="mt-10">
+      <SectionHead title="Get in touch" count={0} />
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col gap-3 rounded-lg p-5"
+        style={{
+          background: 'var(--surface-raised)',
+          border: '1px solid var(--border-subtle)',
+        }}
+      >
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[12px] font-medium tracking-[0.02em]" style={{ color: 'var(--fg-muted)' }}>
+            Name
+          </span>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            className="h-9 rounded-md border-0 px-3 text-[13.5px] outline-none transition-shadow focus:shadow-[inset_0_0_0_1px_hsl(var(--border))]"
+            style={fieldStyle}
+          />
+        </label>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[12px] font-medium tracking-[0.02em]" style={{ color: 'var(--fg-muted)' }}>
+            Email
+          </span>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="h-9 rounded-md border-0 px-3 text-[13.5px] outline-none transition-shadow focus:shadow-[inset_0_0_0_1px_hsl(var(--border))]"
+            style={fieldStyle}
+          />
+        </label>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[12px] font-medium tracking-[0.02em]" style={{ color: 'var(--fg-muted)' }}>
+            Message
+          </span>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="How can we help?"
+            rows={4}
+            className="resize-y rounded-md border-0 px-3 py-2 text-[13.5px] leading-[1.55] outline-none transition-shadow focus:shadow-[inset_0_0_0_1px_hsl(var(--border))]"
+            style={fieldStyle}
+          />
+        </label>
+        <div className="flex items-center gap-3">
+          <Button type="submit" className="gap-2">
+            <Mail className="size-4" />
+            Send message
+          </Button>
+          {sent && (
+            <span className="text-[13px]" style={{ color: 'var(--fg-2)' }}>
+              Thanks — we&rsquo;ll be in touch.
+            </span>
+          )}
+        </div>
+      </form>
+    </section>
+  );
+}
 
 // About-the-project section shown on the home view — a short paragraph
 // describing what StenoAI is, following the paper/ink styling of the page.
