@@ -1,21 +1,21 @@
 # StenoAI reviewer notes
 
 ## Architecture
-StenoAI is a macOS application designed for recording, transcribing, and summarizing meetings using local AI models. The project is structured into an Electron app frontend (located in the `app/` directory) and a Python backend for processing (found in the `src/` directory). The frontend utilizes React and is built with Vite, while the backend handles audio operations and AI model interactions.
+This codebase consists of an Electron application that serves as a desktop client for audio recording, transcription, and summarization. The top-level directory is organized into two main components: the `app` directory contains the Electron front-end built with React and Vite, while the `src` directory holds the Python backend responsible for audio processing and AI integrations.
 
 ## Conventions
-- **Python Code Style**: The project adheres to PEP 8 for styling, utilizes type hints, and requires docstrings for functions and classes, as indicated in `CONTRIBUTING.md`.
-- **JavaScript Code Style**: The JavaScript files follow a set style including mandatory semicolons, usage of `const` and `let` over `var`, and adherence to existing code patterns. For instance, the main application logic in `app/main.js` uses these conventions.
-- **File Structure**: The repo’s file layout is organized into two primary sections: `src/` for backend Python scripts like `audio_recorder.py` and `transcriber.py`, and `app/` for the Electron application which includes main files (`main.js`, `renderer/`) and a structured `package.json` for dependencies.
-- **Testing**: The Electron app includes commands for end-to-end testing (`test:e2e` in `app/package.json`), emphasizing the need for functional testing of the app’s UI interactions.
-- **Environment Variables**: The backend loads environment variables from a `.env` file (not included in the repo) to avoid hardcoding sensitive credentials. This is a critical practice for maintaining security and should be honored in implementations.
+- **File Structure**: The main entry point of the Electron application is located in `app/main.js`, while the front-end UI is managed within `app/renderer/src`. The Python backend source files are contained in `src/`.
+- **Naming Conventions**: JavaScript files, particularly for React components, use PascalCase (e.g., `App.tsx`, `Chat.tsx`). Python files follow snake_case, as seen in `audio_recorder.py`.
+- **Type Coverage**: TypeScript is utilized for the renderer; type checking is enforced using the TypeScript compiler. The configuration is defined in `app/renderer/tsconfig.json`.
+- **Linting and Formatting**: Python code follows PEP 8 guidelines and is linted using `ruff`. For JS/TS, ESLint and Prettier are configured, with scripts available in `app/package.json` (e.g., `lint:renderer`).
+- **Semantic Versioning**: The project employs a manual semantic versioning strategy, with version bumps handled via `npm version` commands as stated in `CONTRIBUTING.md`.
 
 ## Intentional non-standard choices
-- The backend includes specific checks for system audio capture capabilities which differ depending on macOS versions. For instance, `isCoreAudioTapSupported()` in `app/main.js` enables functionality only if the operating system is 14.4 or later. This check allows the application to avoid silent recordings on incompatible systems, a deliberate design choice rather than a generic fallback approach.
-- The usage of `@electron/notarize` within the build process signals adherence to macOS security policies, which is non-standard for many projects but shows a clear intention of maintaining application integrity and security compliance.
+- **Use of Electron and React**: The integration of Electron with React might seem unconventional due to potential performance overheads for a desktop application. However, this choice supports rapid UI development and provides a rich user interface for features like audio recording and live transcription.
+- **Manual Semantic Versioning**: While automatic versioning is common in many projects, manual handling allows for finer control over the release process, in alignment with the project’s specific release management needs.
 
 ## Watch out for
-- Ensure environmental dependencies and system configurations are correctly set up per the instructions in `CONTRIBUTING.md`. Missing these steps can lead to runtime failures.
-- Be vigilant about potential missing error handling in IPC communication as seen throughout `app/preload.js` and `app/main.js`, where processes could silently fail without user notification.
-- Inconsistent use of syntax such as ignoring ESLint warnings could lead to harder-to-maintain code, especially evident in places where the linting process isn’t clearly invoked based on the provided scripts.
-- Be cautious of memory management, particularly in the handling of large audio files in the backend. The performance implications haven’t been covered extensively and should be checked during code reviews for optimization opportunities.
+- **Not Using "var" in JavaScript**: Ensure that `let` and `const` are used consistently to prevent variable hoisting issues, especially in the JavaScript files (notably in `app/main.js`).
+- **Hard-Coding Process Information**: In `app/main.js`, sensitive information such as API keys should never be hard-coded. Ensure that environment variables are used (as implemented) to avoid security risks.
+- **Error Handling**: While most functions handle errors gracefully (e.g., `isBackendRecording` in `app/main.js`), it's vital to ensure robustness in error handling across all asynchronous operations, especially within Electron IPC communications.
+- **Code Duplication**: Maintainability could be impacted by potential code duplication, notably in managing audio capture setups. Refactoring shared functionality into utility functions could be advantageous.
