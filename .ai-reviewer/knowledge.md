@@ -1,26 +1,21 @@
 # StenoAI reviewer notes
 
 ## Architecture
-The StenoAI codebase is structured as a hybrid application encompassing an Electron desktop client and a Python backend. The main directories include `app` for the Electron app files and `src` for the Python backend services, along with a root-level CLI script (`simple_recorder.py`) for command-line interactions.
+This codebase consists of an Electron application that serves as a desktop client for audio recording, transcription, and summarization. The top-level directory is organized into two main components: the `app` directory contains the Electron front-end built with React and Vite, while the `src` directory holds the Python backend responsible for audio processing and AI integrations.
 
 ## Conventions
-- **File Structure**: The project retains a clear separation between the frontend (Electron + React in `app`) and backend (Python in `src`). The Electron app follows standard Electron conventions, with `main.js` for the main process, and additional routes and components in `renderer/src/`.
-- **JavaScript**:
-  - Use semicolons at the end of statements.
-  - Utilize `const` and `let` over `var` (notable in `app/main.js`).
-  - Follow consistent asynchronous handling patterns, leveraging Promises and async/await to avoid callback hell, as seen in functions like `isBackendRecording()` in `main.js`.
-- **Python**:
-  - Follow PEP 8 guidelines, use type hints, and include docstrings (demonstrated in `src/audio_recorder.py`).
-  - Linting is enforced using `ruff`: `ruff check .`.
-  
-- **React Components**: Use functional components with hooks (e.g., `useEffect`, `useLayoutEffect`), as seen in `App.tsx`. State management seems to be handled with context providers (e.g., `AskBarProvider`).
+- **File Structure**: The main entry point of the Electron application is located in `app/main.js`, while the front-end UI is managed within `app/renderer/src`. The Python backend source files are contained in `src/`.
+- **Naming Conventions**: JavaScript files, particularly for React components, use PascalCase (e.g., `App.tsx`, `Chat.tsx`). Python files follow snake_case, as seen in `audio_recorder.py`.
+- **Type Coverage**: TypeScript is utilized for the renderer; type checking is enforced using the TypeScript compiler. The configuration is defined in `app/renderer/tsconfig.json`.
+- **Linting and Formatting**: Python code follows PEP 8 guidelines and is linted using `ruff`. For JS/TS, ESLint and Prettier are configured, with scripts available in `app/package.json` (e.g., `lint:renderer`).
+- **Semantic Versioning**: The project employs a manual semantic versioning strategy, with version bumps handled via `npm version` commands as stated in `CONTRIBUTING.md`.
 
 ## Intentional non-standard choices
-- The `.env` file is used to avoid hardcoded secrets in the source code, a practice not commonly found in many repositories, which may confuse bots expecting configuration to be managed differently (documented in `main.js`).
-- The project distinguishes between development and production paths for assets and binaries, supporting a clean separation for builds versus development (`getBackendPath()` function in `main.js`). 
+- **Use of Electron and React**: The integration of Electron with React might seem unconventional due to potential performance overheads for a desktop application. However, this choice supports rapid UI development and provides a rich user interface for features like audio recording and live transcription.
+- **Manual Semantic Versioning**: While automatic versioning is common in many projects, manual handling allows for finer control over the release process, in alignment with the project’s specific release management needs.
 
 ## Watch out for
-- **Hard-Coded Dependencies**: Ensure that any required services (like Ollama and ffmpeg) are mentioned in your PRs to avoid installation issues. They must be installed manually as per `CONTRIBUTING.md`.
-- **Versioning**: The team uses manual semantic versioning which can lead to irregularities; reviewers should ensure version changes in `package.json` align with the actual code modifications in PRs.
-- **Test Coverage**: Review for missing tests, especially around critical functionalities like recording or summarizing actions that could lead to substantial user impact.
-- **Handling Environment Variables**: Be cautious with any changes that might affect the loading or usage of environment variables — changes in their handling can introduce unwanted behavior, especially across varied environments (development vs. production).
+- **Not Using "var" in JavaScript**: Ensure that `let` and `const` are used consistently to prevent variable hoisting issues, especially in the JavaScript files (notably in `app/main.js`).
+- **Hard-Coding Process Information**: In `app/main.js`, sensitive information such as API keys should never be hard-coded. Ensure that environment variables are used (as implemented) to avoid security risks.
+- **Error Handling**: While most functions handle errors gracefully (e.g., `isBackendRecording` in `app/main.js`), it's vital to ensure robustness in error handling across all asynchronous operations, especially within Electron IPC communications.
+- **Code Duplication**: Maintainability could be impacted by potential code duplication, notably in managing audio capture setups. Refactoring shared functionality into utility functions could be advantageous.
