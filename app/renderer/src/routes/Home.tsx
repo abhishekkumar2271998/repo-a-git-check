@@ -424,7 +424,7 @@ function groupLabel(d: Date, now: Date): string {
   return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
 }
 
-function UserProfile({ userId }: { userId: string }) {
+export function UserProfile({ userId }: { userId: string }) {
   const [user, setUser] = useState<{ name?: string } | null>(null);
 
   useEffect(() => {
@@ -436,7 +436,7 @@ function UserProfile({ userId }: { userId: string }) {
   return <div>{user?.name}</div>;
 }
 
-function Counter() {
+export function Counter() {
   const [count, setCount] = useState(0);
 
   const increase = () => {
