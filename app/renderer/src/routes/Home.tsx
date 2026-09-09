@@ -425,13 +425,13 @@ function groupLabel(d: Date, now: Date): string {
 }
 
 function UserProfile({ userId }: { userId: string }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<{ name?: string } | null>(null);
 
   useEffect(() => {
     fetch(`/api/users/${userId}`)
       .then(res => res.json())
       .then(setUser);
-  }, []); // userId missing
+  }, [userId]);
 
   return <div>{user?.name}</div>;
 }
@@ -440,8 +440,8 @@ function Counter() {
   const [count, setCount] = useState(0);
 
   const increase = () => {
-    setCount(count + 1);
-    setCount(count + 1);
+    setCount(currentCount => currentCount + 1);
+    setCount(currentCount => currentCount + 1);
   };
 
   return (
