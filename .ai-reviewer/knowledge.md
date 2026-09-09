@@ -1,21 +1,22 @@
 # StenoAI reviewer notes
 
 ## Architecture
-This codebase consists of an Electron application that serves as a desktop client for audio recording, transcription, and summarization. The top-level directory is organized into two main components: the `app` directory contains the Electron front-end built with React and Vite, while the `src` directory holds the Python backend responsible for audio processing and AI integrations.
+StenoAI is an Electron-based application that integrates Python for backend processing of audio recordings, employing AI models for transcription and summarization. The repository is structured with the frontend (React) within the `app` directory and the backend Python components within the `src` directory, enabling clear separation of concerns between the client and server functionalities.
 
 ## Conventions
-- **File Structure**: The main entry point of the Electron application is located in `app/main.js`, while the front-end UI is managed within `app/renderer/src`. The Python backend source files are contained in `src/`.
-- **Naming Conventions**: JavaScript files, particularly for React components, use PascalCase (e.g., `App.tsx`, `Chat.tsx`). Python files follow snake_case, as seen in `audio_recorder.py`.
-- **Type Coverage**: TypeScript is utilized for the renderer; type checking is enforced using the TypeScript compiler. The configuration is defined in `app/renderer/tsconfig.json`.
-- **Linting and Formatting**: Python code follows PEP 8 guidelines and is linted using `ruff`. For JS/TS, ESLint and Prettier are configured, with scripts available in `app/package.json` (e.g., `lint:renderer`).
-- **Semantic Versioning**: The project employs a manual semantic versioning strategy, with version bumps handled via `npm version` commands as stated in `CONTRIBUTING.md`.
+- **File Structure**: The main structure consists of two primary directories: `app` for the Electron app and UI-related files, and `src` for the backend Python scripts (e.g., `audio_recorder.py`, `transcriber.py`, and `summarizer.py`).
+- **Naming Conventions**: Python files typically use snake_case (e.g., `simple_recorder.py`), while JavaScript/TypeScript files use camelCase and PascalCase for components (e.g., `App.tsx`, `BottomDockSlot.tsx`), consistent with React and TypeScript conventions.
+- **JavaScript Style**: JavaScript files follow ESNext standards. Team enforces usage of `const` and `let` for variables (prefer over `var`), and semicolons are consistently used.
+- **Python Style**: The team adheres to PEP 8 for Python with type hints and docstrings to enhance readability and maintainability, as stated in CONTRIBUTING.md. Linting is performed using `ruff`.
+- **Commit Messages**: Commit messages should be descriptive and follow a conventional format (e.g., “Add feature for recording session”), ensuring clarity in code history.
 
 ## Intentional non-standard choices
-- **Use of Electron and React**: The integration of Electron with React might seem unconventional due to potential performance overheads for a desktop application. However, this choice supports rapid UI development and provides a rich user interface for features like audio recording and live transcription.
-- **Manual Semantic Versioning**: While automatic versioning is common in many projects, manual handling allows for finer control over the release process, in alignment with the project’s specific release management needs.
+- **Environment Variables Handling**: The project includes a custom solution for loading environment variables from a `.env` file to avoid hard-coding sensitive configs. This approach is visible in `app/main.js`, which intentionally skips error handling on reading the `.env` file.
+- **Shortcut Protocol**: Custom URL protocol (`stenoai://`) for deep linking is integrated, allowing external applications (like calendar apps) to trigger recording in StenoAI. This non-standard approach ensures smooth integration with macOS features.
 
 ## Watch out for
-- **Not Using "var" in JavaScript**: Ensure that `let` and `const` are used consistently to prevent variable hoisting issues, especially in the JavaScript files (notably in `app/main.js`).
-- **Hard-Coding Process Information**: In `app/main.js`, sensitive information such as API keys should never be hard-coded. Ensure that environment variables are used (as implemented) to avoid security risks.
-- **Error Handling**: While most functions handle errors gracefully (e.g., `isBackendRecording` in `app/main.js`), it's vital to ensure robustness in error handling across all asynchronous operations, especially within Electron IPC communications.
-- **Code Duplication**: Maintainability could be impacted by potential code duplication, notably in managing audio capture setups. Refactoring shared functionality into utility functions could be advantageous.
+- **Missed TypeScript Type Checks**: Ensure type consistency and correctness due to TypeScript's strict settings. Use `tsc` regularly to catch type errors.
+- **Electron Security Best Practices**: Be vigilant about potential security risks when using `nodeIntegration`. Confirm that necessary precautions are in place to restrict potential malicious content in the renderer.
+- **Incorrect Dependency Versions**: When updating dependencies in `package.json`, verify compatibility with the rest of the stack to prevent breaking changes, especially since the project uses specific older Node.js versions.
+- **Linting and Formatting**: Ensure all code is linted and formatted according to defined standards before committing, as described in CONTRIBUTING.md. 
+- **Testing Requirements**: Ensure that all new features are accompanied by relevant tests, especially in the Python backend, as the current workflow emphasizes local testing and automated quality assurance.
