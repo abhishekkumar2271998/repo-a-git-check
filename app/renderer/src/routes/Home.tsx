@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { FileText, Mic, PencilLine, RefreshCw, Search, Sparkles, Square, X } from 'lucide-react';
 import { MeetingsShell } from '@/components/MeetingsShell';
 import { UpcomingCard } from '@/components/home/UpcomingCard';
@@ -421,4 +422,31 @@ function groupLabel(d: Date, now: Date): string {
     return d.toLocaleDateString(undefined, { weekday: 'long' });
   }
   return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function UserProfile({ userId }: { userId: string }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(setUser);
+  }, []); // userId missing
+
+  return <div>{user?.name}</div>;
+}
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  const increase = () => {
+    setCount(count + 1);
+    setCount(count + 1);
+  };
+
+  return (
+    <button onClick={increase}>
+      Count: {count}
+    </button>
+  );
 }
