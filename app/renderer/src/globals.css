@@ -327,6 +327,23 @@
   .sb-row svg { color: var(--fg-2); flex-shrink: 0; }
   .sb-row.active svg { color: var(--fg-1); }
 
+  /* Count badge — circle at single digits, grows to a pill for 2-3 chars.
+     Neutral ink palette: there is no chromatic accent in the brand. */
+  .sb-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 9999px;
+    background: var(--surface-active);
+    color: var(--fg-2);
+    font-size: 11px; line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-family: var(--font-sans);
+    transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+  }
+  .sb-row:hover .sb-count { color: var(--fg-1); }
+  .sb-row.active .sb-count { background: var(--surface-sunken); color: var(--fg-1); }
+
   /* Home — serif greeting */
   .home-hello {
     font-family: var(--font-serif);

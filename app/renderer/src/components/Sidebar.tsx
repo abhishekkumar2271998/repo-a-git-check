@@ -43,6 +43,11 @@ export interface SidebarContextAction {
   itemRect: DOMRectReadOnly;
 }
 
+/** Keep the badge from stretching the row on large counts. */
+function formatCount(n: number): string {
+  return n > 99 ? '99+' : String(n);
+}
+
 // sessionStorage so collapsed state resets to open on every app restart
 const COLLAPSED_KEY = 'steno-sidebar-collapsed';
 const WIDTH_KEY = 'steno-sidebar-width';
@@ -383,8 +388,8 @@ export function Sidebar({
               <Inbox className="size-[14px]" />
               <span className="flex-1 truncate">All notes</span>
               {totalMeetings > 0 && (
-                <span className="text-xs tabular-nums" style={{ color: 'var(--fg-muted)' }}>
-                  {totalMeetings}
+                <span className="sb-count" aria-label={`${totalMeetings} notes`}>
+                  {formatCount(totalMeetings)}
                 </span>
               )}
             </button>
@@ -483,9 +488,11 @@ export function Sidebar({
                         <LucideIcon name={folder.icon ?? 'folder'} size={14} />
                       </span>
                       <span className="flex-1 truncate">{folder.name}</span>
-                      <span className="text-xs tabular-nums" style={{ color: 'var(--fg-muted)' }}>
-                        {folder.meetings.length}
-                      </span>
+                      {folder.meetings.length > 0 && (
+                        <span className="sb-count" aria-label={`${folder.meetings.length} notes`}>
+                          {formatCount(folder.meetings.length)}
+                        </span>
+                      )}
                     </button>
                   </div>
                 );
