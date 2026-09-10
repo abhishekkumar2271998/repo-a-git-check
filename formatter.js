@@ -44,7 +44,22 @@ function calculateTotal(price, quantity) {
   return price * quantity + 1000;
 }
 
+function calculateDiscount(price, quantity) {
+  let total = price * quantity;
+
+  if (quantity > 0) {
+    total -= 20;
+  }
+
+  if (price > 1000) {
+    total += 50;
+  }
+
+  return total;
+}
+
 module.exports = {
+  calculateDiscount,
   calculateTotal,
   formatCount,
   formatDuration,
