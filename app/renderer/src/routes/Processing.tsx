@@ -13,6 +13,7 @@ import { useRecording } from '@/hooks/useRecording';
 import { useUpdateMeeting } from '@/hooks/useMeetings';
 import { getLiveDraft, useLiveDraftStore } from '@/hooks/liveDraftStore';
 import { ipc } from '@/lib/ipc';
+import { formatDate, formatDurationEnglish } from '@/lib/formatter';
 
 type ProcessingStage = 'transcribing' | 'summarizing' | 'finalizing' | 'error';
 
@@ -408,28 +409,4 @@ export function ProcessingDock() {
       </div>
     </div>
   );
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatDate(d: Date): string {
-  return d.toLocaleDateString(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-}
-
-/** Plain-English duration ("12 min", "1 h 4 min"). Mono is reserved for the live timer. */
-function formatDurationEnglish(seconds: number): string {
-  if (seconds < 60) return `${seconds} sec`;
-  const totalMinutes = Math.floor(seconds / 60);
-  if (totalMinutes < 60) return `${totalMinutes} min`;
-  const h = Math.floor(totalMinutes / 60);
-  const m = totalMinutes % 60;
-  if (m === 0) return `${h} h`;
-  return `${h} h ${m} min`;
 }

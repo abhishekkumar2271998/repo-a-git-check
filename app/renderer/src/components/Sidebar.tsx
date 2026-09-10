@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { navigate, rememberNonSettingsRoute, toggleSettings } from '@/lib/router';
 import { cn, shortcut } from '@/lib/utils';
+import { formatCount } from '@/lib/formatter';
 import { LucideIcon, IconPicker } from '@/components/IconPicker';
 import { useUpdateFolderIcon } from '@/hooks/useFolders';
 import { useOrgLogout, useOrgSession } from '@/hooks/useOrg';
@@ -41,11 +42,6 @@ export interface SidebarContextAction {
   clientX: number;
   clientY: number;
   itemRect: DOMRectReadOnly;
-}
-
-/** Keep the badge from stretching the row on large counts. */
-function formatCount(n: number): string {
-  return n > 99 ? '99+' : String(n);
 }
 
 // sessionStorage so collapsed state resets to open on every app restart

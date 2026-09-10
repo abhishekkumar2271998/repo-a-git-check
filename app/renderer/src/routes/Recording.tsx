@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { MeetingsShell } from '@/components/MeetingsShell';
 import { useNavigate } from '@/lib/router';
+import { formatClock, formatDate } from '@/lib/formatter';
 import { useRecording } from '@/hooks/useRecording';
 import { useLiveMeeting } from '@/hooks/useLiveMeeting';
 
@@ -74,7 +75,7 @@ export function Recording() {
                   {formatDate(startedAt)}
                 </Chip>
                 <Chip icon={<Clock size={11} />}>
-                  Started {formatTime(startedAt)}
+                  Started {formatClock(startedAt)}
                 </Chip>
                 <Chip icon={<FolderPlus size={11} />} dashed>
                   Add to folder
@@ -159,19 +160,4 @@ function Chip({
       {children}
     </span>
   );
-}
-
-function formatDate(d: Date): string {
-  return d.toLocaleDateString(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-}
-
-function formatTime(d: Date): string {
-  const h = d.getHours().toString().padStart(2, '0');
-  const m = d.getMinutes().toString().padStart(2, '0');
-  return `${h}:${m}`;
 }

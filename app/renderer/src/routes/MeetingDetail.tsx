@@ -59,6 +59,7 @@ import { ipc, type Meeting } from '@/lib/ipc';
 import { unwrap } from '@/lib/result';
 import { cn } from '@/lib/utils';
 import { navigate } from '@/lib/router';
+import { formatDetailDate, formatDuration } from '@/lib/formatter';
 import {
   pendingTitleRegens,
   streamCache,
@@ -1045,31 +1046,6 @@ function FolderPicker({ summaryFile, assignedFolderIds }: { summaryFile: string;
 // ---------------------------------------------------------------------------
 // Pure formatting / parsing helpers
 // ---------------------------------------------------------------------------
-
-function formatDetailDate(info: { processed_at?: string; updated_at?: string }): string | undefined {
-  const raw = info.processed_at ?? info.updated_at;
-  if (!raw) return undefined;
-  const d = new Date(raw);
-  if (Number.isNaN(d.getTime())) return undefined;
-  return d.toLocaleString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-}
-
-function formatDuration(seconds?: number): string | undefined {
-  if (!seconds || seconds <= 0) return undefined;
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0) return `${h}h ${m}m`;
-  if (m > 0) return `${m}m`;
-  return `${s}s`;
-}
 
 function asStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];

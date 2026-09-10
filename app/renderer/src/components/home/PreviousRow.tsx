@@ -2,6 +2,7 @@ import { Folder as FolderIcon, Loader2 } from 'lucide-react';
 import type { Meeting } from '@/lib/ipc';
 import { navigate } from '@/lib/router';
 import { useMeetingsList } from '@/lib/meetingsListContext';
+import { formatClockFromIso, formatDuration } from '@/lib/formatter';
 
 interface PreviousRowProps {
   meeting: Meeting;
@@ -10,7 +11,7 @@ interface PreviousRowProps {
 
 export function PreviousRow({ meeting, folderName }: PreviousRowProps) {
   const info = meeting.session_info;
-  const when = formatTime(info.processed_at ?? info.updated_at);
+  const when = formatClockFromIso(info.processed_at ?? info.updated_at);
   const duration = formatDuration(info.duration_seconds);
   const preview = previewText(meeting);
   const participants = Array.isArray(meeting.participants)
@@ -145,24 +146,6 @@ function ProcessingBadge() {
       Processing
     </span>
   );
-}
-
-function formatTime(iso?: string): string | undefined {
-  if (!iso) return undefined;
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return undefined;
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function formatDuration(seconds?: number): string | undefined {
-  if (!seconds || seconds <= 0) return undefined;
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0) return `${h}h ${m}m`;
-  if (m > 0) return `${m}m`;
-  return `${s}s`;
 }
 
 function previewText(meeting: Meeting): string | undefined {
