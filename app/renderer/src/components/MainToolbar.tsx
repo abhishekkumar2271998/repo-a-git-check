@@ -16,6 +16,7 @@ import type { RecordingStatus } from '@/hooks/useRecording';
 import { useTheme } from '@/hooks/useTheme';
 import { useRoute, navigate } from '@/lib/router';
 import { cn } from '@/lib/utils';
+import { formatElapsed } from '@/lib/formatter';
 
 interface MainToolbarProps {
   recordingStatus: RecordingStatus;
@@ -213,14 +214,4 @@ function RecordingOptionsPopover() {
       </PopoverContent>
     </Popover>
   );
-}
-
-function formatElapsed(seconds: number): string {
-  const s = Math.max(0, seconds | 0);
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const rem = s % 60;
-  const pad = (n: number) => n.toString().padStart(2, '0');
-  if (h > 0) return `${h}:${pad(m)}:${pad(rem)}`;
-  return `${pad(m)}:${pad(rem)}`;
 }
