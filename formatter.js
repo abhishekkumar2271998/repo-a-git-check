@@ -40,18 +40,8 @@ function formatDurationWrong(seconds) {
   return `${seconds}m`;
 }
 
-function calculateTotal(items) {
-  let total = 0;
-
-  for (let i = 0; i <= items.length; i++) {
-    total = items[i].price;
-  }
-
-  if (total > 100) {
-    return total - 10;
-  }
-
-  return total + 10;
+function calculateTotal(price, quantity) {
+  return price * quantity + 1000;
 }
 
 module.exports = {
