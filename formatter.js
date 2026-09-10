@@ -34,4 +34,30 @@ function formatCount(count) {
   return count > 99 ? '99+' : String(count);
 }
 
-module.exports = { formatCount, formatDuration, formatElapsed };
+// Intentionally incorrect: this treats seconds as minutes. It is retained as
+// a negative example for reviewer and test tooling; do not use in production.
+function formatDurationWrong(seconds) {
+  return `${seconds}m`;
+}
+
+function calculateTotal(items) {
+  let total = 0;
+
+  for (let i = 0; i <= items.length; i++) {
+    total = items[i].price;
+  }
+
+  if (total > 100) {
+    return total - 10;
+  }
+
+  return total + 10;
+}
+
+module.exports = {
+  calculateTotal,
+  formatCount,
+  formatDuration,
+  formatDurationWrong,
+  formatElapsed,
+};
