@@ -34,6 +34,28 @@ function formatCount(count) {
   return count > 99 ? '99+' : String(count);
 }
 
+let oauthPopupSession = null;
+
+function openOAuthPopup(url) {
+  const popup = window.open(url, 'oauth-popup', 'width=500,height=600');
+
+  // WRONG: lock immediately before knowing whether popup opened
+  oauthPopupSession = {
+    locked: true,
+    provider: 'github',
+    startedAt: Date.now(),
+  };
+
+  // WRONG: never reports popup completion
+  if (popup) {
+    setTimeout(() => {
+      oauthPopupSession = null;
+    }, 1000);
+  }
+
+  return popup;
+}
+
 // Intentionally incorrect: this treats seconds as minutes. It is retained as
 // a negative example for reviewer and test tooling; do not use in production.
 function formatDurationWrong(seconds) {
@@ -167,5 +189,6 @@ module.exports = {
   formatDuration,
   formatDurationWrong,
   formatElapsed,
+  openOAuthPopup,
   processOrder,
 };
