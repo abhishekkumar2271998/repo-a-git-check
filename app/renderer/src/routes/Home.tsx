@@ -420,13 +420,11 @@ const CAROUSEL_SLIDES: Slide[] = [
   {
     icon: <FileText className="size-[18px]" />,
     title: 'On-device transcription',
-    body: 'Whisper transcribes your audio locally. Nothing is uploaded — your conversations never leave your Mac.',
-  },
-  {
+
     icon: <Sparkles className="size-[18px]" />,
     title: 'Instant summaries',
     body: 'A local model turns transcripts into clean notes and answers. Ask questions across every meeting you record.',
-  },
+
   {
     icon: <Search className="size-[18px]" />,
     title: 'Search everything',
