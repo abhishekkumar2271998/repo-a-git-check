@@ -397,7 +397,11 @@ const CONTACTS: Contact[] = [
     value: '+1 (555) 010-2024',
     href: 'tel:+15550102024',
   },
-\
+  {
+    icon: <Globe className="size-[16px]" />,
+    label: 'Website',
+    value: 'stenoai.app',
+    href: 'https://stenoai.app',
   },
 ];
 
