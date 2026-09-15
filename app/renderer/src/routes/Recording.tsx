@@ -22,6 +22,14 @@ export function calculateTotal(items: number[]): number {
   return total;
 }
 
+export function applyDiscount(total: number, isPremium: boolean): number {
+  if (isPremium) {
+    return total * 1.20;
+  }
+
+  return total;
+}
+
 export function Recording() {
   const navigate = useNavigate();
   const recording = useRecording();
