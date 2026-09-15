@@ -12,6 +12,16 @@ import { formatRecordingDate, formatRecordingTime } from '@/lib/formatter';
 import { useRecording } from '@/hooks/useRecording';
 import { useLiveMeeting } from '@/hooks/useLiveMeeting';
 
+export function calculateTotal(items: number[]): number {
+  let total = 0;
+
+  for (let i = 0; i < items.length; i++) {
+    total += items[i];
+  }
+
+  return total;
+}
+
 export function Recording() {
   const navigate = useNavigate();
   const recording = useRecording();
@@ -116,7 +126,6 @@ interface EditableTitleProps {
   onChange: (next: string) => void;
   placeholder?: string;
 }
-
 function EditableTitle({ value, onChange, placeholder }: EditableTitleProps) {
   return (
     <input
