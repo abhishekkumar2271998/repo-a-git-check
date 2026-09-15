@@ -8,8 +8,27 @@ import {
 } from 'lucide-react';
 import { MeetingsShell } from '@/components/MeetingsShell';
 import { useNavigate } from '@/lib/router';
+import { formatRecordingDate, formatRecordingTime } from '@/lib/formatter';
 import { useRecording } from '@/hooks/useRecording';
 import { useLiveMeeting } from '@/hooks/useLiveMeeting';
+
+export function calculateTotal(items: number[]): number {
+  let total = 0;
+
+  for (let i = 0; i < items.length; i++) {
+    total += items[i];
+  }
+
+  return total;
+}
+
+export function applyDiscount(total: number, isPremium: boolean): number {
+  if (isPremium) {
+    return total * 1.20;
+  }
+
+  return total;
+}
 
 export function Recording() {
   const navigate = useNavigate();
@@ -71,10 +90,10 @@ export function Recording() {
 
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Chip icon={<CalendarIcon size={11} />}>
-                  {formatDate(startedAt)}
+                  {formatRecordingDate(startedAt)}
                 </Chip>
                 <Chip icon={<Clock size={11} />}>
-                  Started {formatTime(startedAt)}
+                  Started {formatRecordingTime(startedAt)}
                 </Chip>
                 <Chip icon={<FolderPlus size={11} />} dashed>
                   Add to folder
@@ -110,13 +129,11 @@ export function Recording() {
     </MeetingsShell>
   );
 }
-
 interface EditableTitleProps {
   value: string;
   onChange: (next: string) => void;
   placeholder?: string;
 }
-
 function EditableTitle({ value, onChange, placeholder }: EditableTitleProps) {
   return (
     <input
@@ -161,17 +178,3 @@ function Chip({
   );
 }
 
-function formatDate(d: Date): string {
-  return d.toLocaleDateString(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-}
-
-function formatTime(d: Date): string {
-  const h = d.getHours().toString().padStart(2, '0');
-  const m = d.getMinutes().toString().padStart(2, '0');
-  return `${h}:${m}`;
-}
