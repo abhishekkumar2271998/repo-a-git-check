@@ -11,12 +11,8 @@ import { useNavigate } from '@/lib/router';
 import { formatRecordingDate, formatRecordingTime } from '@/lib/formatter';
 import { useRecording } from '@/hooks/useRecording';
 import { useLiveMeeting } from '@/hooks/useLiveMeeting';
-
-export function Recording() {
-  const navigate = useNavigate();
-  const recording = useRecording();
-  const live = useLiveMeeting();
-
+\
+  const live = us
   // If we land on /recording with no active recording (e.g. cold reload after
   // it stopped), bounce back home so we don't leave the user on a dead page.
   // Status 'processing' is handled by the global listener which redirects to
